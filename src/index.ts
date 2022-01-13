@@ -1,13 +1,23 @@
-import Discord from "discord.js";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
-import Leetcode from "leetcode-api";
-import Problem from "leetcode-api/dist/lib/problem";
+import { Client, Intents } from "discord.js";
+import processMessage from "./messages/message";
+import { BOT_TOKEN } from "./utilities/constants";
 
-dotenv.config();
+async function main() {
+    // Create a new client instance
+    const client = new Client({
+        intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+    });
 
-const main = async () => {
-    console.log("Hello World!");
-};
+    // When the client is ready, run this code (only once)
+    client.once("ready", () => {
+        console.log("Ready!");
+    });
+
+    // Login to Discord with your client's token
+    client.login(BOT_TOKEN);
+
+    // Create an event listener for messages
+    client.on("messageCreate", (message) => processMessage(message));
+}
 
 main();

@@ -1,5 +1,5 @@
 import { Client, Intents } from "discord.js";
-import processMessage from "./messages/message";
+import handleMessage from "./components/message";
 import { BOT_TOKEN } from "./utilities/constants";
 
 async function main() {
@@ -8,16 +8,15 @@ async function main() {
         intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
     });
 
-    // When the client is ready, run this code (only once)
+    // Login to Discord with your client's token
+    client.login(BOT_TOKEN);
+
     client.once("ready", () => {
         console.log("Ready!");
     });
 
-    // Login to Discord with your client's token
-    client.login(BOT_TOKEN);
-
     // Create an event listener for messages
-    client.on("messageCreate", (message) => processMessage(message));
+    client.on("messageCreate", (message) => handleMessage(message));
 }
 
 main();

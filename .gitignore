@@ -20,7 +20,7 @@ tmp
 node_modules
 
 # Editors
-./vscode
+/.vscode
 
 # OS metadata
 .DS_Store

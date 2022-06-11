@@ -23,7 +23,9 @@ function validateMessage(message: Message): boolean {
  * @returns An output string to be sent to the channel
  */
 async function proccessMessage(msg: string): Promise<string> {
-    switch (msg) {
+    const command = msg.split(" ")[0]
+
+    switch (command) {
         case "ping":
             return "pong";
         case "help":

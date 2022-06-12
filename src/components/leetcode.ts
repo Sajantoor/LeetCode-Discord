@@ -1,10 +1,8 @@
-
-// Check if it's a valid leetcode command, if it is call the proper APIs and 
-
 import { CODE_SPLITTER } from "../utilities/constants";
-import { fileExtension, submissionArgs } from "../utils/lc-types";
+import { fileExtension, submissionArgs } from "../utilities/lc-types";
 import { getQuestion, submit, test } from "./leetcode-api";
 
+// Check if it's a valid leetcode command, if it is call the proper APIs and 
 // return the output
 async function handleLeetcode(msg: string): Promise<string> {
     const args = msg.split(CODE_SPLITTER)[0].split(" ");

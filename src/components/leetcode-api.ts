@@ -1,7 +1,7 @@
 import util from "util";
 import { exec as _exec } from "child_process";
 import fs from "fs";
-import { fileExtension, questionArgs, submissionArgs } from "../utils/lc-types";
+import { fileExtension, questionArgs, submissionArgs } from "../utilities/lc-types";
 const exec = util.promisify(_exec);
 
 export async function getQuestion(arg: questionArgs) {

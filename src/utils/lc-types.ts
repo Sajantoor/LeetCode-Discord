@@ -5,3 +5,4 @@ export type company = "google" | "facebook" | "amazon" | "microsoft" | "apple";
 // Question Types
 export type questionArgs = "" | number | difficulty | company;
 export type submissionArgs = "" | number;
+export type fileExtension = "java" | "python" | "cpp" | "c" | "javascript" | "typescript";

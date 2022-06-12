@@ -47,7 +47,7 @@ async function handleMessage(message: Message) {
     if (!validateMessage(message)) return;
 
     // message is guaranteed to be valid and has a prefix, remove prefix
-    const msg = message.content.toLowerCase().substring(PREFIX.length);
+    const msg = message.content.substring(PREFIX.length);
     const output = await proccessMessage(msg);
     message.reply(output);
 }

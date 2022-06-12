@@ -1,30 +1,30 @@
 
 // Check if it's a valid leetcode command, if it is call the proper APIs and 
 
-import { submissionArgs } from "src/utils/lc-types";
+import { CODE_SPLITTER } from "../utilities/constants";
+import { fileExtension, submissionArgs } from "../utils/lc-types";
 import { getQuestion, submit, test } from "./leetcode-api";
 
 // return the output
 async function handleLeetcode(msg: string): Promise<string> {
-    const args = msg.split(" ");
-    console.log(args);
-    const command = args[1];
-    const submissionArgs = args[2] as submissionArgs;
-    const code = args[3];
-
-    if (submissionArgs == null) {
-        return "Invalid arguments";
+    const args = msg.split(CODE_SPLITTER)[0].split(" ");
+    // trim each argument
+    for (let i = 0; i < args.length; i++) {
+        args[i] = args[i].trim();
     }
 
-    console.log(command);
+    const command = args[1];
+    const submissionArgs = args[2] as submissionArgs;
+    const language = args[3] as fileExtension;
+    const code = msg.split(CODE_SPLITTER)[1];
 
     switch (command) {
         case "question":
             return await getQuestion(submissionArgs);
         case "submit":
-            return await submit(submissionArgs, code);
+            return await submit(submissionArgs, language, code);
         case "test":
-            return await test(submissionArgs, code);
+            return await test(submissionArgs, language, code);
         default:
             return "Unknown leetcode command";
     }

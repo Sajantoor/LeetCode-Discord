@@ -4,38 +4,80 @@ import fs from "fs";
 import { fileExtension, questionArgs, submissionArgs } from "../utilities/lc-types";
 const exec = util.promisify(_exec);
 
+/**
+ * @param arg The arguments for the question
+ * @returns The leetcode question and information for the given argument
+ */
 export async function getQuestion(arg: questionArgs) {
-    // check if the argument is a difficulty
     const output = await runCommand(`leetcode show ${arg}`);
     return output.stdout;
 }
 
+/**
+ * Submits the given code to leetcode and returns whether it was successful or not
+ * 
+ * @param arg Submission argument
+ * @param language The language of the submitted code
+ * @param code The code to submit
+ * @returns The output of the submsission
+ */
 export async function submit(arg: submissionArgs, language: fileExtension, code: string) {
     return await submission(arg, language, code, false);
 }
 
+/**
+ * Tests the given code and returns the output
+ * 
+ * @param arg Submission argument
+ * @param language The language of the submitted code
+ * @param code The code to submit
+ * @returns The output of the submsission
+ */
 export async function test(arg: submissionArgs, language: fileExtension, code: string) {
     return await submission(arg, language, code, true);
 }
 
-// helper function to get the filename from the question number
+/**
+ * Helper function to get the filename for a given question number
+ * @param questionNumber The leetcode question number
+ * @param fileExtension The file extension of the file
+ * @returns The filename for a given question number and file extension of form 
+ *         "[question number].[question title].[file extension]"
+ */
 async function getFilename(questionNumber: number, fileExtension: string): Promise<string> {
-    // Get the question title from leetcode API 
     const output = await getQuestion(questionNumber);
     const title = output.split("\n")[0].split("]")[1].trim();
-    // filename format is always [question number].[question title].[file extension]
     return `${questionNumber}.${title}.${fileExtension}`;
 }
 
-function validateSubmissionParams(arg: submissionArgs, fileExtension: fileExtension, code: string) {
+
+/**
+ * Helper function to validate the submission parameters for submission and tests
+ * @param arg The submission argument
+ * @param fileExtension The file extension of the file
+ * @param code The code to submit
+ * @returns True if the parameters are valid, False otherwise
+ */
+function validateSubmissionParams(arg: submissionArgs, fileExtension: fileExtension, code: string): boolean {
     if (arg == null || fileExtension == null || code == null) {
         return false;
     }
     return true;
 }
 
-// Helper function to help submission and tests
-async function submission(arg: submissionArgs, fileExtension: fileExtension, code: string, isTest: boolean) {
+/**
+ * Helper function to submit the code to leetcode, creates a file with the code and 
+ * then executes the command to submit the code. Deletes the file afterwards. 
+ * Returns the output of the command or any error that occurred. 
+ * 
+ * 
+ * @param arg   The submission argument
+ * @param fileExtension The file extension of the file
+ * @param code  The code to submit
+ * @param isTest Whether it's a test or not
+ * @returns The output of the submission
+ */
+async function submission(arg: submissionArgs, fileExtension: fileExtension, code: string, isTest: boolean): Promise<string> {
     if (!validateSubmissionParams(arg, fileExtension, code))
         return "Invalid test or submission arguments";
 
@@ -52,11 +94,10 @@ async function submission(arg: submissionArgs, fileExtension: fileExtension, cod
     let output;
 
     try {
-        if (isTest) {
+        if (isTest)
             output = await runCommand(`leetcode test "${filename}"`);
-        } else {
+        else
             output = await runCommand(`leetcode submit "${filename}"`);
-        }
     } catch (err) {
         return "Error encounted while submitting: " + err;
     }

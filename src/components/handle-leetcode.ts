@@ -14,11 +14,6 @@ async function handleLeetcode(message: Message): Promise<string> {
     const args = getArgsFromMessage(message);
     const command = args[1];
 
-    // const command = args[1];
-    // const submissionArgs = args[2] as submissionArgs;
-    // const language = args[3] as fileExtension;
-    // const code = msg.split(DISCORD_CODE_FORMATTER)[1];
-
     switch (command) {
         case "question":
             return await getQuestion(message);

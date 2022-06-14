@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { DISCORD_CODE_FORMATTER, PREFIX } from "../utilities/constants";
-import handleLeetcode from "./leetcode";
+import handleLeetcode from "./handle-leetcode";
 import { message } from "./message";
 
 /**

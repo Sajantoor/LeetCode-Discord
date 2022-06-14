@@ -5,7 +5,7 @@
  * @returns The message styled appropriately
  */
 export function message(content: string): string {
-    return content;
+    return `\`\`\`\n${content}\`\`\``;
 }
 
 

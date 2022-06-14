@@ -1,5 +1,5 @@
 import { Client, Intents } from "discord.js";
-import handleMessage from "./components/message";
+import handleMessage from "./components/handle-message";
 import { BOT_TOKEN } from "./utilities/constants";
 
 async function main() {

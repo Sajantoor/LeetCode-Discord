@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { PREFIX } from "../utilities/constants";
+import { DISCORD_CODE_FORMATTER, PREFIX } from "../utilities/constants";
 import handleLeetcode from "./leetcode";
 import { message } from "./message";
 
@@ -23,8 +23,9 @@ function validateMessage(message: Message): boolean {
  * @param msg The message to handle
  * @returns An output string to be sent to the channel
  */
-async function proccessMessage(msg: string): Promise<string> {
-    const command = msg.split(" ")[0]
+async function proccessMessage(msg: Message): Promise<string> {
+    const msgContent = getMessageContent(msg);
+    const command = msgContent.split(" ")[0]
 
     switch (command) {
         case "ping":
@@ -38,6 +39,26 @@ async function proccessMessage(msg: string): Promise<string> {
     }
 }
 
+export function getMessageContent(message: Message): string {
+    return message.content.substring(PREFIX.length);
+}
+
+export function getArgsFromMessage(message: Message): string[] {
+    const msg = getMessageContent(message);
+    const args = msg.split(DISCORD_CODE_FORMATTER)[0].split(" ");
+    // trim each argument
+    for (let i = 0; i < args.length; i++) {
+        args[i] = args[i].trim();
+    }
+
+    return args;
+}
+
+export function getCodeFromMesage(message: Message): string {
+    const msg = getMessageContent(message);
+    return msg.split(DISCORD_CODE_FORMATTER)[1];
+}
+
 /**
  * Processes, validates and handles a message
  * @param message The message to process, validates and handle
@@ -46,10 +67,8 @@ async function proccessMessage(msg: string): Promise<string> {
 async function handleMessage(message: Message) {
     // validate message
     if (!validateMessage(message)) return;
-
     // message is guaranteed to be valid and has a prefix, remove prefix
-    const msg = message.content.substring(PREFIX.length);
-    const output = await proccessMessage(msg);
+    const output = await proccessMessage(message);
     message.reply(output);
 }
 

@@ -3,15 +3,35 @@ import { exec as _exec } from "child_process";
 import fs from "fs";
 import { fileExtension, questionArgs, submissionArgs } from "../utilities/lc-types";
 import { errorMessage, message } from "./message";
+import { Message } from "discord.js";
+import { getArgsFromMessage, getCodeFromMesage } from "./handle-message";
 const exec = util.promisify(_exec);
+
+
+/**
+ * Helper function to outputs the question content for a given argument
+ * @param arg The question argument
+ * @returns The output of the command
+ */
+async function getQuestionContent(arg: questionArgs): Promise<string> {
+    const output = await runCommand(`leetcode show ${arg}`);
+    return output.stdout;
+}
 
 /**
  * @param arg The arguments for the question
  * @returns The leetcode question and information for the given argument
  */
-export async function getQuestion(arg: questionArgs) {
-    const output = await runCommand(`leetcode show ${arg}`);
-    return message(output.stdout);
+export async function getQuestion(msg: Message) {
+    const args = getArgsFromMessage(msg);
+    const arg = args[2] as questionArgs;
+
+    if (arg == null) {
+        return errorMessage("Invalid leetcode question argument...");
+    }
+
+    const output = await getQuestionContent(arg);
+    return message(output);
 }
 
 /**
@@ -22,7 +42,12 @@ export async function getQuestion(arg: questionArgs) {
  * @param code The code to submit
  * @returns The output of the submsission
  */
-export async function submit(arg: submissionArgs, language: fileExtension, code: string) {
+export async function submit(message: Message) {
+    const args = getArgsFromMessage(message);
+    const arg = args[2] as submissionArgs;
+    const language = args[3] as fileExtension;
+    const code = getCodeFromMesage(message);
+
     return await submission(arg, language, code, false);
 }
 
@@ -34,7 +59,12 @@ export async function submit(arg: submissionArgs, language: fileExtension, code:
  * @param code The code to submit
  * @returns The output of the submsission
  */
-export async function test(arg: submissionArgs, language: fileExtension, code: string) {
+export async function test(message: Message) {
+    const args = getArgsFromMessage(message);
+    const arg = args[2] as submissionArgs;
+    const language = args[3] as fileExtension;
+    const code = args[4] as string;
+
     return await submission(arg, language, code, true);
 }
 
@@ -46,7 +76,7 @@ export async function test(arg: submissionArgs, language: fileExtension, code: s
  *         "[question number].[question title].[file extension]"
  */
 async function getFilename(questionNumber: number, fileExtension: string): Promise<string> {
-    const output = await getQuestion(questionNumber);
+    const output = await getQuestionContent(questionNumber);
     const title = output.split("\n")[0].split("]")[1].trim();
     return `${questionNumber}.${title}.${fileExtension}`;
 }
@@ -109,7 +139,13 @@ async function submission(arg: submissionArgs, fileExtension: fileExtension, cod
         if (err) console.error(err);
     });
 
-    return message(output.stdout);
+    // Check if the submission was successful or not...
+    const result = output.stdout;
+    if (result.includes("Accepted")) {
+        // Give the user points
+    }
+
+    return message(result);
 }
 
 /**
@@ -120,3 +156,4 @@ async function submission(arg: submissionArgs, fileExtension: fileExtension, cod
 async function runCommand(command: string) {
     return await exec(command);
 }
+

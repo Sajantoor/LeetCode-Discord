@@ -2,6 +2,7 @@ import util from "util";
 import { exec as _exec } from "child_process";
 import fs from "fs";
 import { fileExtension, questionArgs, submissionArgs } from "../utilities/lc-types";
+import { errorMessage, message } from "./message";
 const exec = util.promisify(_exec);
 
 /**
@@ -10,7 +11,7 @@ const exec = util.promisify(_exec);
  */
 export async function getQuestion(arg: questionArgs) {
     const output = await runCommand(`leetcode show ${arg}`);
-    return output.stdout;
+    return message(output.stdout);
 }
 
 /**
@@ -88,7 +89,7 @@ async function submission(arg: submissionArgs, fileExtension: fileExtension, cod
     try {
         fs.writeFileSync(filename, code);
     } catch (err) {
-        return "Error writing file";
+        return errorMessage("Error writing file");
     }
 
     let output;
@@ -99,15 +100,16 @@ async function submission(arg: submissionArgs, fileExtension: fileExtension, cod
         else
             output = await runCommand(`leetcode submit "${filename}"`);
     } catch (err) {
-        return "Error encounted while submitting: " + err;
+        return errorMessage("Error encounted while submitting: " + err);
     }
 
-    // // Delete the file after submission
+    // Delete the file after submission
+    // Don't need to show this error the user
     fs.unlink(filename, (err) => {
         if (err) console.error(err);
     });
 
-    return output.stdout;
+    return message(output.stdout);
 }
 
 /**

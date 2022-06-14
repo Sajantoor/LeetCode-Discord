@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import { PREFIX } from "../utilities/constants";
 import handleLeetcode from "./leetcode";
+import { message } from "./message";
 
 /**
  * Checks if a message is valid and should be handled.
@@ -27,13 +28,13 @@ async function proccessMessage(msg: string): Promise<string> {
 
     switch (command) {
         case "ping":
-            return "pong";
+            return message("pong");
         case "help":
-            return "This is a help message";
+            return message("This is a help message");
         case "leetcode":
             return await handleLeetcode(msg);
         default:
-            return "Unknown command";
+            return message("Unknown command");
     }
 }
 

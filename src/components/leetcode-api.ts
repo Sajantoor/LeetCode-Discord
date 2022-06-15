@@ -43,12 +43,7 @@ export async function getQuestion(msg: Message) {
  * @returns The output of the submsission
  */
 export async function submit(message: Message) {
-    const args = getArgsFromMessage(message);
-    const arg = args[2] as submissionArgs;
-    const language = args[3] as fileExtension;
-    const code = getCodeFromMesage(message);
-
-    return await submission(arg, language, code, false);
+    return await submission(message, false);
 }
 
 /**
@@ -60,12 +55,7 @@ export async function submit(message: Message) {
  * @returns The output of the submsission
  */
 export async function test(message: Message) {
-    const args = getArgsFromMessage(message);
-    const arg = args[2] as submissionArgs;
-    const language = args[3] as fileExtension;
-    const code = args[4] as string;
-
-    return await submission(arg, language, code, true);
+    return await submission(message, true);
 }
 
 /**
@@ -108,7 +98,12 @@ function validateSubmissionParams(arg: submissionArgs, fileExtension: fileExtens
  * @param isTest Whether it's a test or not
  * @returns The output of the submission
  */
-async function submission(arg: submissionArgs, fileExtension: fileExtension, code: string, isTest: boolean): Promise<string> {
+async function submission(discordMessage: Message, isTest: boolean): Promise<string> {
+    const args = getArgsFromMessage(discordMessage);
+    const arg = args[2] as submissionArgs;
+    const fileExtension = args[3] as fileExtension;
+    const code = getCodeFromMesage(discordMessage);
+
     if (!validateSubmissionParams(arg, fileExtension, code))
         return "Invalid test or submission arguments";
 
@@ -142,7 +137,7 @@ async function submission(arg: submissionArgs, fileExtension: fileExtension, cod
     // Check if the submission was successful or not...
     const result = output.stdout;
     if (result.includes("Accepted")) {
-        // Give the user points
+        // Give the user points 
     }
 
     return message(result);

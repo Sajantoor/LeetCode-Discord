@@ -9,16 +9,6 @@ const exec = util.promisify(_exec);
 
 
 /**
- * Helper function to outputs the question content for a given argument
- * @param arg The question argument
- * @returns The output of the command
- */
-async function getQuestionContent(arg: questionArgs): Promise<string> {
-    const output = await runCommand(`leetcode show ${arg}`);
-    return output.stdout;
-}
-
-/**
  * @param arg The arguments for the question
  * @returns The leetcode question and information for the given argument
  */
@@ -58,33 +48,6 @@ export async function test(message: Message) {
     return await submission(message, true);
 }
 
-/**
- * Helper function to get the filename for a given question number
- * @param questionNumber The leetcode question number
- * @param fileExtension The file extension of the file
- * @returns The filename for a given question number and file extension of form 
- *         "[question number].[question title].[file extension]"
- */
-async function getFilename(questionNumber: number, fileExtension: string): Promise<string> {
-    const output = await getQuestionContent(questionNumber);
-    const title = output.split("\n")[0].split("]")[1].trim();
-    return `${questionNumber}.${title}.${fileExtension}`;
-}
-
-
-/**
- * Helper function to validate the submission parameters for submission and tests
- * @param arg The submission argument
- * @param fileExtension The file extension of the file
- * @param code The code to submit
- * @returns True if the parameters are valid, False otherwise
- */
-function validateSubmissionParams(arg: submissionArgs, fileExtension: fileExtension, code: string): boolean {
-    if (arg == null || fileExtension == null || code == null) {
-        return false;
-    }
-    return true;
-}
 
 /**
  * Helper function to submit the code to leetcode, creates a file with the code and 
@@ -136,11 +99,50 @@ async function submission(discordMessage: Message, isTest: boolean): Promise<str
 
     // Check if the submission was successful or not...
     const result = output.stdout;
-    if (result.includes("Accepted")) {
-        // Give the user points 
+    if (!isTest && result.includes("Accepted")) {
+        // Give the user points for successful submission
+        updateUserScore(discordMessage);
     }
 
     return message(result);
+}
+
+/**
+ * Helper function to outputs the question content for a given argument
+ * @param arg The question argument
+ * @returns The output of the command
+ */
+async function getQuestionContent(arg: questionArgs): Promise<string> {
+    const output = await runCommand(`leetcode show ${arg}`);
+    return output.stdout;
+}
+
+/**
+ * Helper function to get the filename for a given question number
+ * @param questionNumber The leetcode question number
+ * @param fileExtension The file extension of the file
+ * @returns The filename for a given question number and file extension of form 
+ *         "[question number].[question title].[file extension]"
+ */
+async function getFilename(questionNumber: number, fileExtension: string): Promise<string> {
+    const output = await getQuestionContent(questionNumber);
+    const title = output.split("\n")[0].split("]")[1].trim();
+    return `${questionNumber}.${title}.${fileExtension}`;
+}
+
+
+/**
+ * Helper function to validate the submission parameters for submission and tests
+ * @param arg The submission argument
+ * @param fileExtension The file extension of the file
+ * @param code The code to submit
+ * @returns True if the parameters are valid, False otherwise
+ */
+function validateSubmissionParams(arg: submissionArgs, fileExtension: fileExtension, code: string): boolean {
+    if (arg == null || fileExtension == null || code == null) {
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -151,4 +153,3 @@ async function submission(discordMessage: Message, isTest: boolean): Promise<str
 async function runCommand(command: string) {
     return await exec(command);
 }
-

@@ -10,8 +10,9 @@ const exec = util.promisify(_exec);
 
 
 /**
- * @param arg The arguments for the question
- * @returns The leetcode question and information for the given argument
+ * 
+ * @param msg The message from the user containing the question argument
+ * @returns Leetcode question and information
  */
 export async function getQuestion(msg: Message) {
     const args = getArgsFromMessage(msg);
@@ -26,12 +27,11 @@ export async function getQuestion(msg: Message) {
 }
 
 /**
- * Submits the given code to leetcode and returns whether it was successful or not
+ * Submits the message to Leetcode and returns the result, whether it was 
+ * successful or not. If it was successful, update the user score.
  * 
- * @param arg Submission argument
- * @param language The language of the submitted code
- * @param code The code to submit
- * @returns The output of the submsission
+ * @param message The message from the user
+ * @returns The message output
  */
 export async function submit(message: Message) {
     return await submission(message, false);
@@ -40,11 +40,9 @@ export async function submit(message: Message) {
 /**
  * Tests the given code and returns the output
  * 
- * @param arg Submission argument
- * @param language The language of the submitted code
- * @param code The code to submit
- * @returns The output of the submsission
- */
+ * @param message the message from the user
+ * @returns The output of the command
+*/
 export async function test(message: Message) {
     return await submission(message, true);
 }
@@ -55,11 +53,8 @@ export async function test(message: Message) {
  * then executes the command to submit the code. Deletes the file afterwards. 
  * Returns the output of the command or any error that occurred. 
  * 
- * 
- * @param arg   The submission argument
- * @param fileExtension The file extension of the file
- * @param code  The code to submit
- * @param isTest Whether it's a test or not
+ * @param discordMessage The message from the user
+ * @param isTest Whether the submission is a test or not
  * @returns The output of the submission
  */
 async function submission(discordMessage: Message, isTest: boolean): Promise<string> {

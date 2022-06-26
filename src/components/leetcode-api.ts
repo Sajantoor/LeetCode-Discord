@@ -5,6 +5,7 @@ import { fileExtension, questionArgs, submissionArgs } from "../utilities/lc-typ
 import { errorMessage, message } from "./message";
 import { Message } from "discord.js";
 import { getArgsFromMessage, getCodeFromMesage } from "./handle-message";
+import { updateUserScore } from "./user-api";
 const exec = util.promisify(_exec);
 
 
@@ -101,7 +102,9 @@ async function submission(discordMessage: Message, isTest: boolean): Promise<str
     const result = output.stdout;
     if (!isTest && result.includes("Accepted")) {
         // Give the user points for successful submission
-        updateUserScore(discordMessage);
+        const userScore = await updateUserScore(discordMessage, 25, questionNumber);
+        const winningMessage = `Congratulations! You now have ${userScore} points!`;
+        return message(winningMessage + "\n" + result);
     }
 
     return message(result);

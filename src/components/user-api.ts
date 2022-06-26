@@ -20,12 +20,12 @@ export async function updateUserScore(message: Message, updateScore: number, que
     // TODO: Should check if the user has a streak at this point and add a multipler
     // to the score
     const score = user.score + updateScore;
-    const completedQuestions = user.solved;
-    completedQuestions.push(question);
+    const solved = user.solved;
+    solved.push(question);
 
     const updatedUser = {
         ...user,
-        completedQuestions,
+        solved,
         score
     }
 

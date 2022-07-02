@@ -31,12 +31,24 @@ async function proccessMessage(msg: Message): Promise<string> {
         case "ping":
             return message("pong");
         case "help":
-            return message("This is a help message");
+            return helpMessage();
         case "leetcode":
             return await handleLeetcode(msg);
         default:
-            return message("Unknown command");
+            return message(`Unknown command, please use ${PREFIX} help for a list of commands.`);
     }
+}
+
+function helpMessage(): string {
+    const content = `Commands:
+    ${PREFIX}ping - Ping command
+    ${PREFIX}help - List of commands
+    ${PREFIX}leetcode: 
+        ${PREFIX}leetcode [question number] - Get question information 
+        ${PREFIX}leetcode submit [question number] [language] [code] - Submit code for a question
+    `;
+
+    return message(content);
 }
 
 export function getMessageContent(message: Message): string {

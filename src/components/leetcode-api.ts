@@ -1,7 +1,7 @@
 import util from "util";
 import { exec as _exec } from "child_process";
 import fs from "fs";
-import { fileExtension, questionArgs, submissionArgs } from "../utilities/lc-types";
+import { fileExtension, questionArgs, submissionArgs } from "../types/lc";
 import { errorMessage, message } from "./message";
 import { Message } from "discord.js";
 import { getArgsFromMessage, getCodeFromMesage } from "./handle-message";

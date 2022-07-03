@@ -47,6 +47,8 @@ function helpMessage(): string {
     ${PREFIX}leetcode: 
         ${PREFIX}leetcode [question number] - Get question information 
         ${PREFIX}leetcode submit [question number] [language] [code] - Submit code for a question
+        ${PREFIX}leetcode score [(optional) user id] - Get score for a user
+        ${PREFIX}leetcode submitted [(optional) user id] - Get submitted questions for a user
     `;
 
     return message(content);

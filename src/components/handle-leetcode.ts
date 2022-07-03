@@ -1,7 +1,8 @@
 import { Message } from "discord.js";
 import { getArgsFromMessage } from "./handle-message";
-import { getQuestion, submit, test } from "./leetcode-api";
+import { getQuestion, submit } from "./leetcode-api";
 import { errorMessage } from "./message";
+import { getUserScoreCommand, getUserSubmittedQuestionsCommand } from "./user-api";
 
 /**
  * Checks if it's a valid leetcode command, if it is then call the proper APIs and
@@ -19,8 +20,10 @@ async function handleLeetcode(message: Message): Promise<string> {
             return await getQuestion(message);
         case "submit":
             return await submit(message);
-        case "test":
-            return await test(message);
+        case "score":
+            return await getUserScoreCommand(message);
+        case "submitted":
+            return await getUserSubmittedQuestionsCommand(message);
         default:
             return errorMessage("Unknown leetcode command");
     }

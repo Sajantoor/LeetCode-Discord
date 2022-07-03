@@ -66,6 +66,10 @@ export function getArgsFromMessage(message: Message): string[] {
     return args;
 }
 
+export function getUserIdFromArg(arg: string): string {
+    return arg.split("<@")[1].split(">")[0];
+}
+
 export function getCodeFromMesage(message: Message): string {
     const msg = getMessageContent(message);
     return msg.split(DISCORD_CODE_FORMATTER)[1];

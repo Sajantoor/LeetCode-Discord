@@ -2,6 +2,7 @@ import { Message } from "discord.js";
 import { newUser, User } from "../utilities/user";
 import { db } from "../components/firebase";
 import { query, collection, where, getDocs, addDoc, updateDoc } from "firebase/firestore";
+import { getArgsFromMessage, getUserIdFromArg } from "./handle-message";
 
 const USER_COLLECTION = "users";
 
@@ -110,4 +111,79 @@ export async function getUser(userId: string): Promise<User | null> {
     // there should not be more than one user with the same userId
     const user = userDocs.docs[0].data() as User;
     return user;
+}
+
+/**
+ * 
+ * @param userId The user's discord id
+ * @returns The user's solved questions
+ */
+export async function getUserSubmittedQuestions(userId: string): Promise<number[]> {
+    const user = await getUser(userId);
+    if (user === null) {
+        return [];
+    }
+
+    return user.solved;
+}
+
+/**
+ * 
+ * @param userId The user's discord id
+ * @returns The user's score
+ */
+export async function getUserScore(userId: string): Promise<number | null> {
+    const user = await getUser(userId);
+    if (user === null) {
+        return null;
+    }
+
+    return user.score;
+}
+
+/**
+ * 
+ * @param msg The message from the user
+ * @returns A message containing a user's score, if a user is not provided then it will
+ * return the author's score
+ */
+export async function getUserScoreCommand(msg: Message): Promise<string> {
+    // Check if the message contains a user
+    const args = getArgsFromMessage(msg);
+    let userId = msg.author.id;
+
+    if (args.length > 2) {
+        userId = getUserIdFromArg(args[2]);
+    }
+
+    const score = await getUserScore(userId);
+    if (score === null) {
+        return `This user has not solved any questions yet.`;
+    }
+
+    return `Score is ${score}`;
+}
+
+/**
+ * 
+ * @param msg The message from the user
+ * @returns A message containing a user's solved questions if a user is not provided then it will
+ * return the author's submitted questions
+ */
+export async function getUserSubmittedQuestionsCommand(msg: Message): Promise<string> {
+    // Check if the message contains a user
+    const args = getArgsFromMessage(msg);
+    let userId = msg.author.id;
+
+    if (args.length > 2) {
+        userId = getUserIdFromArg(args[2]);
+    }
+
+    const solved = await getUserSubmittedQuestions(userId);
+    if (solved.length === 0) {
+        return `This user has not solved any questions yet.`;
+    }
+
+    return `Solved questions: ${solved.join(", ")}`;
+
 }

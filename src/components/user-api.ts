@@ -1,8 +1,8 @@
 import { Message } from "discord.js";
 import { newUser, User } from "../utilities/user";
 import { db } from "../components/firebase";
+import { getArgsFromMessage, getUserIdFromArg } from "../utilities/helpers";
 import { query, collection, where, getDocs, addDoc, updateDoc } from "firebase/firestore";
-import { getArgsFromMessage, getUserIdFromArg } from "./handle-message";
 
 const USER_COLLECTION = "users";
 

@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { getArgsFromMessage } from "./handle-message";
+import { getArgsFromMessage } from "../utilities/helpers";
 import { getQuestion, submit } from "./leetcode-api";
 import { errorMessage } from "./message";
 import { getUserScoreCommand, getUserSubmittedQuestionsCommand } from "./user-api";

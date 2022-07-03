@@ -3,8 +3,8 @@ import { exec as _exec } from "child_process";
 import fs from "fs";
 import { fileExtension, questionArgs, submissionArgs } from "../types/lc";
 import { errorMessage, message } from "./message";
+import { getArgsFromMessage, getCodeFromMesage } from "../utilities/helpers";
 import { Message } from "discord.js";
-import { getArgsFromMessage, getCodeFromMesage } from "./handle-message";
 import { updateUserScore } from "./user-api";
 const exec = util.promisify(_exec);
 

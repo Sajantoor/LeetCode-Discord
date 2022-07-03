@@ -30,38 +30,17 @@ export async function getQuestion(msg: Message) {
  * Submits the message to Leetcode and returns the result, whether it was 
  * successful or not. If it was successful, update the user score.
  * 
- * @param message The message from the user
+ * Creates a file with the code and then executes the command to submit the code. 
+ * Deletes the file afterwards. Returns the output of the command or any error that occurred. 
+ * 
+ * @param msg The message from the user
  * @returns The message output
  */
-export async function submit(message: Message) {
-    return await submission(message, false);
-}
-
-/**
- * Tests the given code and returns the output
- * 
- * @param message the message from the user
- * @returns The output of the command
-*/
-export async function test(message: Message) {
-    return await submission(message, true);
-}
-
-
-/**
- * Helper function to submit the code to leetcode, creates a file with the code and 
- * then executes the command to submit the code. Deletes the file afterwards. 
- * Returns the output of the command or any error that occurred. 
- * 
- * @param discordMessage The message from the user
- * @param isTest Whether the submission is a test or not
- * @returns The output of the submission
- */
-async function submission(discordMessage: Message, isTest: boolean): Promise<string> {
-    const args = getArgsFromMessage(discordMessage);
+export async function submit(msg: Message) {
+    const args = getArgsFromMessage(msg);
     const arg = args[2] as submissionArgs;
     const fileExtension = args[3] as fileExtension;
-    const code = getCodeFromMesage(discordMessage);
+    const code = getCodeFromMesage(msg);
 
     if (!validateSubmissionParams(arg, fileExtension, code))
         return "Invalid test or submission arguments";
@@ -79,10 +58,7 @@ async function submission(discordMessage: Message, isTest: boolean): Promise<str
     let output;
 
     try {
-        if (isTest)
-            output = await runCommand(`leetcode test "${filename}"`);
-        else
-            output = await runCommand(`leetcode submit "${filename}"`);
+        output = await runCommand(`leetcode submit "${filename}"`);
     } catch (err) {
         return errorMessage("Error encounted while submitting: " + err);
     }
@@ -95,9 +71,9 @@ async function submission(discordMessage: Message, isTest: boolean): Promise<str
 
     // Check if the submission was successful or not...
     const result = output.stdout;
-    if (!isTest && result.includes("Accepted")) {
+    if (result.includes("Accepted")) {
         // Give the user points for successful submission
-        const userScore = await updateUserScore(discordMessage, 25, questionNumber);
+        const userScore = await updateUserScore(msg, 25, questionNumber);
         const winningMessage = `Congratulations! You now have ${userScore} points!`;
         return message(winningMessage + "\n" + result);
     }
@@ -130,7 +106,7 @@ async function getFilename(questionNumber: number, fileExtension: string): Promi
 
 
 /**
- * Helper function to validate the submission parameters for submission and tests
+ * Helper function to validate the submission parameters for submission
  * @param arg The submission argument
  * @param fileExtension The file extension of the file
  * @param code The code to submit
